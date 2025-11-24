@@ -1,0 +1,13 @@
+# Exe et binaires
+
+scanner
+*.exe
+*.out
+
+# IDE
+.vscode/
+.idea/
+
+# builds & autres
+build/
+bin/
