@@ -10,7 +10,7 @@ jobs :
   build-test:
     runs-on: ubuntu-latest
 
-  if: {{github.event_name == 'pull_request'}} || {{github.event_name == 'push'}}
+  
   steps:
 
     - name: Checkout code
