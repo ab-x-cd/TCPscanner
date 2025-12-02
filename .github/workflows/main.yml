@@ -33,15 +33,15 @@ jobs:
           cd build
           ./tcp_scanner 127.0.0.1 22 22 || echo "Test completed (port may be closed)"
 
-      #  - name: Test 2 - Invalid IP test (should fail)
-      #   run: |
-      #     cd build
-      #     if ./tcp_scanner 999.999.999.999 80 80; then
-      #       echo "Test failed: Invalid IP should return error"
-      #       exit 1
-      #     else
-      #       echo "Test passed: Invalid IP correctly rejected"
-      #     fi
+      - name: Test 2 - Invalid IP test (should fail)
+        run: |
+          cd build
+          if ./tcp_scanner 999.999.999.999 80 80; then
+            echo "Test failed: Invalid IP should return error"
+            exit 1
+          else
+            echo "Test passed: Invalid IP correctly rejected"
+          fi
 
       - name: Test 3 - Invalid arguments test
         run: |
