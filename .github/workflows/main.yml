@@ -10,11 +10,11 @@ jobs :
   build-test:
     runs-on: ubuntu-latest
 
-  if: github.event_name == 'pull_request'
+  if: {{github.event_name == 'pull_request'}} 
   steps:
 
     - name: Checkout code
-      uses: actions/checkout
+      uses: actions/checkout@v2
 
     # - name : Docker Build
     # run: docker build -t tcp_scanner .
