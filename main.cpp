@@ -12,6 +12,11 @@
 
 using string = std::string ;
 
+bool is_valid_ipv4(const char* ip) {
+    struct sockaddr_in sa;
+    return inet_pton(AF_INET, ip, &(sa.sin_addr)) == 1;
+}
+
 bool scan_port_nonblock(const char* target_ip, int port, std::string& banner_out);
 
 int main(int argc, char* argv[]) { 
@@ -22,10 +27,27 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     const char* ip = argv[1];
+    if (!is_valid_ipv4(ip)) {
+        std::cout << "Adresse IP invalide" << std::endl;
+        return 1;
+    }
     string startPort = argv[2];
     string endPort = argv[3];
 
-    for(int port = std::stoi(startPort); port <= std::stoi(endPort); ++port) 
+    int start, end;
+    try {
+        start = std::stoi(startPort);
+        end = std::stoi(endPort);
+    } catch (...) {
+        std::cout << "Ports invalides (doivent être des nombres)" << std::endl;
+        return 1;
+    }
+    if (start < 1 || start > 65535 || end < 1 || end > 65535 || start > end) {
+        std::cout << "Ports invalides (doivent être entre 1 et 65535, et début <= fin)" << std::endl;
+        return 1;
+    }
+
+    for(int port = start; port <= end; ++port) 
     {
         std::string banner;
         if (scan_port_nonblock(ip, port, banner )) {
@@ -127,92 +149,4 @@ bool scan_port_nonblock(const char* target_ip, int port, std::string& banner_out
 
     close(sock);
     return is_open;
-
-    // code à reprendre
-
-
-    // int result = connect(sock, (struct sockaddr*)&server, sizeof(server));
-    // bool is_open = false;
-
-    // if( result == 0)
-    // {
-        // is_open = true; // le port est ouvert
-    // }
-    // else if (errno == EINPROGRESS) 
-    // {
-        // // à compléter
-        // // faudra utiliser select pour attendre une fin de connexion 
-        // fd_set write_fds;
-        // struct timeval timeout = {1, 0}; // délai d'attente de 1 seconde
-
-        // FD_ZERO(&write_fds);
-        // FD_SET(sock, &write_fds);
-        // int select_res = select(sock + 1, nullptr, &write_fds, nullptr, &timeout);
-
-        // if( select_res == 0)
-        // {
-            // is_open = false; // TO, port fermé, c'est plié
-        // }
-
-        // else if (select_res < 0)
-        // {
-            // is_open = false; 
-            // std::cerr << "Erreur système, select donne < 0" << std::endl;
-        // }
-
-        // else if (select_res > 0)
-        // { 
-            // int socket_error;
-            // socklen_t len = sizeof(socket_error);
-
-            // if (getsockopt(sock, SOL_SOCKET, SO_ERROR, &socket_error, &len) < 0) 
-            // {
-                // is_open = false;
-            // } 
-
-            // else 
-            // {
-                // if (socket_error == 0) 
-                // {
-                    // is_open = true;
-                    // char buffer[1024];
-                    // memset(buffer, 0, sizeof(buffer));
-                    // send(sock, "HEAD / HTTP/1.0\r\n\r\n", 22, 0);
-
-                    // fd_set read_fds;
-                    // FD_ZERO(&read_fds);
-                    // FD_SET(sock, &read_fds);
-
-                    // //timer à 0
-                    // timeout.tv_sec = 0;
-                    // timeout.tv_usec = 500000; // 500 ms
-
-                    // int read_res = select(sock + 1, &read_fds, nullptr, nullptr, &timeout);
-
-                    // if (read_res > 0)
-                    // {
-                        // ssize_t bytes_read = recv(sock, buffer, sizeof(buffer) - 1, 0);
-                        // if (bytes_read > 0) 
-                        // {
-                            // banner_out = std::string(buffer, bytes_read);
-                        // }
-                    // } 
-
-                    // else 
-                    // {
-                        // is_open = false;
-                    // }
-                // }
-            // }
-        // }
-
-        // else 
-        // {
-            // is_open = false; // le port est fermé
-        // }
-
-        // close(sock);
-        // return is_open;
-    // }
 }
-        

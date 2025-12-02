@@ -11,9 +11,13 @@ enable_testing()
 # Test de base - compilation et exécution
 add_test(NAME basic_functionality COMMAND tcp_scanner 127.0.0.1 22 22)
 
-# # Test avec IP invalide (devrait échouer)
-# add_test(NAME invalid_ip_test COMMAND tcp_scanner 999.999.999.999 80 80)
-# set_tests_properties(invalid_ip_test PROPERTIES WILL_FAIL TRUE)
+# Test avec IP invalide (devrait échouer)
+add_test(NAME invalid_ip_test COMMAND tcp_scanner 999.999.999.999 80 80)
+set_tests_properties(invalid_ip_test PROPERTIES WILL_FAIL TRUE)
+
+# Test avec ports invalides (devrait échouer)
+add_test(NAME invalid_ports_test COMMAND tcp_scanner 127.0.0.1 80 20)
+set_tests_properties(invalid_ports_test PROPERTIES WILL_FAIL TRUE)
 
 # Test sans arguments (devrait échouer)
 add_test(NAME no_arguments_test COMMAND tcp_scanner)
