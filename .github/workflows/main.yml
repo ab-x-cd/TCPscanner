@@ -114,7 +114,4 @@ jobs:
       - name: Deploy Application
         run: |
           echo "Deploying application..."
-          # Add your deployment commands here
-          # For example, you might use scp to copy files to a server
-          # scp -r ./build user@server:/path/to/deploy
           echo "Deployment complete."
