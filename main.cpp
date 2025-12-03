@@ -47,15 +47,19 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    std::cout << "Démarrage du scan sur " << ip << " [" << start << "-" << end << "]..." << std::endl;
+
     for(int port = start; port <= end; ++port) 
     {
         std::string banner;
         if (scan_port_nonblock(ip, port, banner )) {
-            std::cout << "Port " << port << " ouvert";
+            std::cout << "[+] Port " << port << " OUVERT";
             if (!banner.empty()) {
                 std::cout << " | Service : " << banner ;
             }
             std::cout << std::endl;
+        } else {
+            std::cout << "[-] Port " << port << " FERMÉ (ou timeout)" << std::endl;
         }
     }
     return 0;
@@ -92,7 +96,7 @@ bool scan_port_nonblock(const char* target_ip, int port, std::string& banner_out
     }
     else if (errno == EINPROGRESS) {
         fd_set write_fds;
-        struct timeval timeout = {1, 0}; 
+        struct timeval timeout = {2, 0}; 
         FD_ZERO(&write_fds);
         FD_SET(sock, &write_fds);
 
