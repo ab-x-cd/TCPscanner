@@ -96,7 +96,7 @@ bool scan_port_nonblock(const char* target_ip, int port, std::string& banner_out
     }
     else if (errno == EINPROGRESS) {
         fd_set write_fds;
-        struct timeval timeout = {2, 0}; 
+        struct timeval timeout = {1, 0}; 
         FD_ZERO(&write_fds);
         FD_SET(sock, &write_fds);
 
