@@ -57,6 +57,7 @@ cmake --build .
 ```bash
 ./tcp_scanner <IP_CIBLE> <PORT_DEBUT> <PORT_FIN>
 ```
+Sous Windows (nouvelle version locale), lancez `./build/Debug/tcp_scanner.exe <IP_CIBLE> <PORT_DEBUT> <PORT_FIN>` pour voir `[OPEN]` et `[CLOSED]` pour chaque port.
 
 ## Avertissement
 Cet outil est conçu uniquement à des fins éducatives et d'audit de sécurité légitime. L'auteur décline toute responsabilité en cas d'utilisation malveillante ou illégale. Assurez-vous d'avoir l'autorisation explicite avant de scanner une cible réseau.

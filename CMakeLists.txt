@@ -6,12 +6,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(tcp_scanner
 	main.cpp
-	src/modele/ScannerModel.cpp
+	src/model/ScannerModel.cpp
 )
 
 target_include_directories(tcp_scanner PRIVATE
 	src/controller
-	src/modele
+	src/model
 	src/view
 )
 
