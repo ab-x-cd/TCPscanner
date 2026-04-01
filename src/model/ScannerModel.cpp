@@ -111,7 +111,7 @@ bool ScannerModel::scanPort(int port, std::string& banner_out) const {
 #endif
 
         fd_set write_fds;
-        struct timeval timeout = {1, 0}; 
+        struct timeval timeout = {0, 2000};  // 200ms au lieu de 1s
         FD_ZERO(&write_fds);
         FD_SET(sock, &write_fds);
 

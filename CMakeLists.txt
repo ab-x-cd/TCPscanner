@@ -4,15 +4,31 @@ project(TCPScanner)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Qt configuration
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+find_package(Qt6 COMPONENTS Core Gui Widgets Network REQUIRED)
+
 add_executable(tcp_scanner
 	main.cpp
 	src/model/ScannerModel.cpp
+	src/controller/ScannerController.cpp
+	src/view/QtView.cpp
 )
 
 target_include_directories(tcp_scanner PRIVATE
 	src/controller
 	src/model
 	src/view
+)
+
+target_link_libraries(tcp_scanner PRIVATE
+	Qt6::Core
+	Qt6::Gui
+	Qt6::Widgets
+	Qt6::Network
 )
 
 if (WIN32)
