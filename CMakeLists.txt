@@ -4,7 +4,20 @@ project(TCPScanner)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(tcp_scanner main.cpp)
+add_executable(tcp_scanner
+	main.cpp
+	src/modele/ScannerModel.cpp
+)
+
+target_include_directories(tcp_scanner PRIVATE
+	src/controller
+	src/modele
+	src/view
+)
+
+if (WIN32)
+	target_link_libraries(tcp_scanner PRIVATE ws2_32)
+endif()
 
 enable_testing()
 
