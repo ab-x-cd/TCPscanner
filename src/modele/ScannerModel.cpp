@@ -117,11 +117,12 @@ bool ScannerModel::scanPort(int port, std::string& banner_out) const {
 
         int select_res = select(static_cast<int>(sock) + 1, nullptr, &write_fds, nullptr, &timeout);
         if (select_res > 0) {
-            int socket_error;
-            int len = sizeof(socket_error);
-            if (getsockopt(sock, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&socket_error), &len) == 0 && socket_error == 0) {
-                connected = true;
-            }
+            int socket_error = 0;
+            socklen_t len = sizeof(socket_error);
+
+        if (getsockopt(sock, SOL_SOCKET, SO_ERROR, &socket_error, &len) == 0 && socket_error == 0) {
+            connected = true;
+        }
         }
     }
 
