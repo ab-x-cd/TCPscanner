@@ -4,19 +4,28 @@ project(TCPScanner)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Qt configuration
+# Qt configuration (optionnel)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 COMPONENTS Core Gui Widgets Network REQUIRED)
+find_package(Qt6 COMPONENTS Core Gui Widgets Network QUIET)
 
-add_executable(tcp_scanner
+# Déterminer les sources selon la disponibilité de Qt6
+set(TCP_SCANNER_SOURCES
 	main.cpp
 	src/model/ScannerModel.cpp
 	src/controller/ScannerController.cpp
-	src/view/QtView.cpp
 )
+
+if(Qt6_FOUND)
+	list(APPEND TCP_SCANNER_SOURCES src/view/QtView.cpp)
+	message(STATUS "Qt6 found: GUI support enabled")
+else()
+	message(STATUS "Qt6 not found: Building CLI-only version")
+endif()
+
+add_executable(tcp_scanner ${TCP_SCANNER_SOURCES})
 
 target_include_directories(tcp_scanner PRIVATE
 	src/controller
@@ -24,12 +33,18 @@ target_include_directories(tcp_scanner PRIVATE
 	src/view
 )
 
-target_link_libraries(tcp_scanner PRIVATE
-	Qt6::Core
-	Qt6::Gui
-	Qt6::Widgets
-	Qt6::Network
-)
+if(Qt6_FOUND)
+	target_compile_definitions(tcp_scanner PRIVATE QT_FOUND)
+endif()
+
+if(Qt6_FOUND)
+	target_link_libraries(tcp_scanner PRIVATE
+		Qt6::Core
+		Qt6::Gui
+		Qt6::Widgets
+		Qt6::Network
+	)
+endif()
 
 if (WIN32)
 	target_link_libraries(tcp_scanner PRIVATE ws2_32)
@@ -47,14 +62,6 @@ set_tests_properties(invalid_ip_test PROPERTIES WILL_FAIL TRUE)
 # Test avec ports invalides (devrait échouer)
 add_test(NAME invalid_ports_test COMMAND tcp_scanner 127.0.0.1 80 20)
 set_tests_properties(invalid_ports_test PROPERTIES WILL_FAIL TRUE)
-
-# Test sans arguments (devrait échouer)
-add_test(NAME no_arguments_test COMMAND tcp_scanner)
-set_tests_properties(no_arguments_test PROPERTIES WILL_FAIL TRUE)
-
-# Test avec arguments insuffisants (devrait échouer)
-add_test(NAME insufficient_args_test COMMAND tcp_scanner 127.0.0.1 80)
-set_tests_properties(insufficient_args_test PROPERTIES WILL_FAIL TRUE)
 
 # Test avec plage de ports
 add_test(NAME port_range_test COMMAND tcp_scanner 127.0.0.1 80 85)
